@@ -6,7 +6,10 @@ import type { Reading } from "@/types/reading";
  * @param days - The number of days to filter readings by
  * @returns The formatted readings
  */
-export function formatReadingsForLineGraph(readings: Reading[], days: number) {
+export function formatReadingsForLineGraph(
+  readings: Reading[],
+  days: number = 7
+) {
   // Get date N days ago
   const daysAgo = new Date();
   daysAgo.setDate(daysAgo.getDate() - days);
