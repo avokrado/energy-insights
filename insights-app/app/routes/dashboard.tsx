@@ -1,16 +1,13 @@
-import React from "react";
-import type { Reading } from "@/types/reading";
-import type { Route } from "./+types";
-
 import BarChartClient from "@/components/consumption-bar-graph";
 
 import ConsumptionLineGraph from "@/components/consumption-line-graph";
+import type { Route } from "./+types/dashboard";
+import { getReadings } from "@/services/api";
 
 export async function loader() {
-  const res = await fetch(`http://localhost:3000/readings`);
-  const data = await res.json();
+  const readings = await getReadings();
 
-  return { readings: data as Reading[] };
+  return { readings };
 }
 
 export default function Dashboard({

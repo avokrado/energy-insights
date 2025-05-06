@@ -1,12 +1,12 @@
 import React from "react";
-import { Spinner } from "./ui/spinner/spinner";
+import { Spinner } from "./ui/spinner";
 import { cn } from "@/utils/cn";
-import { Card } from "./ui/card/card";
+import { Card } from "./ui/card";
 import { formatReadingsForLineGraph } from "@/utils/format";
 import type { Reading } from "@/types/reading";
 import { useQueryParam } from "@/hooks/use-query-params";
 
-const LineGraph = React.lazy(() => import("./ui/graphs/line-graph/line-graph"));
+const LineGraph = React.lazy(() => import("./ui/graphs/line-graph"));
 
 export default function ConsumptionLineGraph({
   className,

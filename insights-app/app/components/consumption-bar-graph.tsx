@@ -1,13 +1,13 @@
 import React from "react";
-import { Spinner } from "./ui/spinner/spinner";
+import { Spinner } from "./ui/spinner";
 import { cn } from "@/utils/cn";
-import { Card } from "./ui/card/card";
+import { Card } from "./ui/card";
 
 import { formatReadingsForBarGraph } from "@/utils/format";
 import type { Reading } from "@/types/reading";
 import { useQueryParam } from "@/hooks/use-query-params";
 
-const BarChart = React.lazy(() => import("./ui/graphs/bar-chart/bar-chart"));
+const BarChart = React.lazy(() => import("./ui/graphs/bar-chart"));
 
 export default function BarChartClient({
   className,
