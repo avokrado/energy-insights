@@ -1,5 +1,12 @@
-import type { Reading } from "~/types/reading";
+import React from "react";
+import type { Reading } from "@/types/reading";
 import type { Route } from "./+types";
+import LineGraphClient from "@/components/ui/graphs/line-graph/line-graph-client";
+import {
+  formatReadingsForBarGraph,
+  formatReadingsForLineGraph,
+} from "@/utils/format";
+import BarChartClient from "@/components/ui/graphs/bar-chart/bar-chart-client";
 
 export async function loader() {
   const res = await fetch(`http://localhost:3000/readings`);
@@ -10,14 +17,13 @@ export async function loader() {
 export default function Dashboard({
   loaderData: { readings },
 }: Route.ComponentProps) {
+  const lineGraphData = formatReadingsForLineGraph(readings, 7);
+  const barChartData = formatReadingsForBarGraph(readings);
+  console.log("barChartData", barChartData);
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <ul>
-        {readings.map((reading) => (
-          <li key={reading.id}>{reading.id}</li>
-        ))}
-      </ul>
+    <div className="flex gap-4 w-full">
+      <LineGraphClient chartData={lineGraphData} />
+      <BarChartClient chartData={barChartData} />
     </div>
   );
 }
