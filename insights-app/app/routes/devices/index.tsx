@@ -1,6 +1,6 @@
-import type { Device } from "~/types/device";
+import type { Device } from "@/types/device";
 import type { Route } from "./+types";
-
+import React from "react";
 export async function loader() {
   const res = await fetch(`http://localhost:3000/devices`);
   const data = await res.json();
