@@ -11,6 +11,9 @@ export interface LineGraphProps {
 }
 
 export default function LineGraph({ chartData }: LineGraphProps) {
+  if (chartData.length === 0) {
+    return <div>No data to display</div>;
+  }
   return (
     <ResponsiveLine
       data={chartData}
