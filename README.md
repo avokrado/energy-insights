@@ -20,14 +20,24 @@ npm i json-server
 Start the server
 
 ```bash
-npx json-server --watch <energy-data>.json --port 3000
+npx json-server --watch energy-data.json
 ```
 
-3. Go into the /insights-app folder and install the dependencies
+Check the port the server is running on, it should be `3000`
+
+3. In separate temrinal tab, go into the `/insights-app` folder
+
+Install the dependencies
 
 ```bash
 cd insights-app
 npm i
+```
+
+Create a `.env` file inside the `/insights-app` folder and add the server port from above
+
+```bash
+SERVER_PORT=<your-port>
 ```
 
 Run the app
@@ -36,7 +46,7 @@ Run the app
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Your application should be available at `http://localhost:5173`.
 
 ## Project Structure
 
