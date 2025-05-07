@@ -12,11 +12,9 @@ const BarChart = React.lazy(() => import("./ui/graphs/bar-chart"));
 export default function BarChartClient({
   className,
   data,
-  title,
 }: {
   className?: string;
   data: Reading[];
-  title?: string;
 }) {
   const [date, setDate] = useQueryParam("date");
 
@@ -32,12 +30,12 @@ export default function BarChartClient({
     setDate(date.toISOString().split("T")[0]);
   }
 
+  // Render only on client
   if (typeof window === "undefined") return null;
 
   return (
     <Card className={cn(className)}>
-      {title && <h2 className="text-2xl text-center">{title}</h2>}
-      <div className="mb-4 flex items-center justify-end gap-4">
+      <div className="flex w-full items-center justify-end gap-4">
         <div className="flex items-center gap-2">
           <input
             type="date"

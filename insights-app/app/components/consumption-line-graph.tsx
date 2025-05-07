@@ -11,25 +11,19 @@ const LineGraph = React.lazy(() => import("./ui/graphs/line-graph"));
 export default function ConsumptionLineGraph({
   className,
   data,
-  title,
 }: {
   className?: string;
   data: Reading[];
-  title?: string;
 }) {
   const [days, setDays] = useQueryParam("days", "7"); // ← default 7
-
   const chartData = formatReadingsForLineGraph(data, Number(days));
 
+  // Render only on client
   if (typeof window === "undefined") return null;
 
   return (
     <Card className={cn(className)}>
-      {title && <h2 className="text-2xl text-center">{title}</h2>}
-      <div className="mb-4 flex items-center justify-end gap-2">
-        <label htmlFor="days" className="text-sm font-medium">
-          Last:
-        </label>
+      <div className="flex w-full items-center justify-end gap-2">
         <select
           id="days"
           value={days}

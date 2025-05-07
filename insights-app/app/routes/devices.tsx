@@ -11,7 +11,9 @@ import {
   handleUpdateDeviceAction,
   handleCreateDeviceAction,
 } from "@/actions/device";
-
+import { useDisclosure } from "@/hooks/use-disclosure";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
 export async function loader() {
   const devices = await getDevices();
   return { devices };
@@ -19,6 +21,11 @@ export async function loader() {
 
 export default function Devices() {
   const { devices } = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const {
+    isOpen: isAddDeviceOpen,
+    open: openAddDevice,
+    close: closeAddDevice,
+  } = useDisclosure();
 
   const columns: Column<Device>[] = [
     { header: "ID", accessor: "id" },
@@ -31,7 +38,9 @@ export default function Devices() {
     <div className="p-4 space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Your Devices</h1>
-        <AddDevice />
+        <Button onClick={openAddDevice} icon={<PlusIcon className="w-4 h-4" />}>
+          Add Device
+        </Button>
       </div>
       <Table
         data={devices}
@@ -39,6 +48,7 @@ export default function Devices() {
         onDelete={(device) => <DeleteDevice device={device} />}
         onUpdate={(device) => <UpdateDevice device={device} />}
       />
+      <AddDevice isOpen={isAddDeviceOpen} onClose={closeAddDevice} />
     </div>
   );
 }
