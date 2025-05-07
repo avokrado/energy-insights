@@ -1,6 +1,6 @@
 # Energy Insights
 
-A simple app to view energy consumption insights.
+A simple app to view energy consumption insights and manage your devices.
 
 ## How to run
 
@@ -56,9 +56,10 @@ insights-app/
 ├── actions/
 │   ├── device.ts # Actions used in the devices route
 ├── components/
+│   ├── layout/ # Layout components
 │   ├── ui/ # Shared UI components
-│   ├── consumption-bar-graph.tsx # Consumption bar graph component
-│   ├── consumption-line-graph.tsx # Consumption line graph component
+│   ├── consumption-bar-graph.tsx # Bar graph component
+│   ├── consumption-line-graph.tsx # Line graph component
 │   ├── navbar.tsx # Navbar component
 │   └── table.tsx # Table component
 ├── helpers/
