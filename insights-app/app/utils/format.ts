@@ -4,11 +4,12 @@ import type { Reading } from "@/types/reading";
  * Format readings for line graph
  * @param readings - The readings to format
  * @param days - The number of days to filter readings by
- * @returns The formatted readings
+ * @returns The formatted readings, limited to 10 readings per device
  */
 export function formatReadingsForLineGraph(
   readings: Reading[],
-  days: number = 7
+  days: number = 7,
+  limiter: number = 10
 ) {
   // Get date N days ago
   const daysAgo = new Date();
@@ -37,13 +38,26 @@ export function formatReadingsForLineGraph(
     return acc;
   }, {} as Record<string, { x: string; y: number }[]>);
 
-  // Sort readings by date
-  return Object.entries(groupedByDevice).map(([deviceId, readings]) => ({
-    id: deviceId,
-    data: readings.sort(
+  // Sort readings by date and limit to 10 readings
+  return Object.entries(groupedByDevice).map(([deviceId, readings]) => {
+    const sortedReadings = readings.sort(
       (a, b) => new Date(a.x).getTime() - new Date(b.x).getTime()
-    ),
-  }));
+    );
+
+    // If more than 10 readings, take evenly spaced samples
+    let limitedReadings = sortedReadings;
+    if (sortedReadings.length > limiter) {
+      const step = Math.floor(sortedReadings.length / limiter);
+      limitedReadings = sortedReadings
+        .filter((_, index) => index % step === 0)
+        .slice(0, limiter);
+    }
+
+    return {
+      id: deviceId,
+      data: limitedReadings,
+    };
+  });
 }
 
 /**

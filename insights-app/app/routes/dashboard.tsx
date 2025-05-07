@@ -4,9 +4,9 @@ import ConsumptionLineGraph from "@/components/consumption-line-graph";
 import type { Route } from "./+types/dashboard";
 import { getReadings } from "@/services/api";
 import React from "react";
+
 export async function loader() {
   const readings = await getReadings();
-
   return { readings };
 }
 

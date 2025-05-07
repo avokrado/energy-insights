@@ -1,5 +1,3 @@
-// hooks/use-query-param.ts
-
 import { useSearchParams } from "react-router";
 
 /**
