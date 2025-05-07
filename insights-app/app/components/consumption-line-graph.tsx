@@ -22,7 +22,8 @@ export default function ConsumptionLineGraph({
   className?: string;
   data: Reading[];
 }) {
-  const [days, setDays] = useQueryParam("days", "7"); // ← default 7
+  const [days, setDays] = useQueryParam("days", "7");
+
   const chartData = formatReadingsForLineGraph(data, Number(days));
 
   // Render only on client

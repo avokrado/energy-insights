@@ -14,6 +14,7 @@ import {
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
+
 export async function loader() {
   const devices = await getDevices();
   return { devices };
