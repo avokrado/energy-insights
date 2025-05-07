@@ -1,28 +1,10 @@
-import {
-  isRouteErrorResponse,
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "react-router";
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import Navbar from "./components/navbar";
-
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
+import ContentLayout from "./components/layouts/content-layout";
+import AppLayout from "./components/layouts/app-layout";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -44,12 +26,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <AppLayout>
       <Navbar />
-      <main className="flex-1 items-center justify-center border-2 border-red-500 p-4">
+      <ContentLayout>
         <Outlet />
-      </main>
-    </div>
+      </ContentLayout>
+    </AppLayout>
   );
 }
 

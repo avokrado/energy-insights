@@ -35,7 +35,7 @@ export default function Devices() {
   ];
 
   return (
-    <div className="p-4 space-y-4">
+    <>
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Your Devices</h1>
         <Button onClick={openAddDevice} icon={<PlusIcon className="w-4 h-4" />}>
@@ -49,7 +49,7 @@ export default function Devices() {
         onUpdate={(device) => <UpdateDevice device={device} />}
       />
       <AddDevice isOpen={isAddDeviceOpen} onClose={closeAddDevice} />
-    </div>
+    </>
   );
 }
 

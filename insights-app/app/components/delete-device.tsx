@@ -4,15 +4,20 @@ import type { Device } from "@/types/device";
 
 import { Dialog } from "./ui/dialog";
 import { useDisclosure } from "@/hooks/use-disclosure";
-
+import React from "react";
 export default function DeleteDevice({ device }: { device: Device }) {
   const fetcher = useFetcher();
   const { isOpen, open, close } = useDisclosure();
 
   const handleConfirm = () => {
     fetcher.submit({ id: device.id, intent: "delete" }, { method: "post" });
-    close();
   };
+
+  React.useEffect(() => {
+    if (fetcher.data?.ok) {
+      close();
+    }
+  }, [fetcher.data]);
 
   return (
     <>
