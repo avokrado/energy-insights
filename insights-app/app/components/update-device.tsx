@@ -10,87 +10,97 @@ import { Input } from "./ui/form/input";
 export default function UpdateDevice({ device }: { device: Device }) {
   const fetcher = useFetcher();
   const { isOpen, open, close } = useDisclosure();
-  const [formData, setFormData] = React.useState({
-    id: device.id,
-    name: device.name,
-    type: device.type,
-    location: device.location,
-  });
+  const isSubmitting = fetcher.state === "submitting";
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    fetcher.submit(form, { method: "post" });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
+    const { name } = e.target;
+    // Clear error when field changes
+    setErrors((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: "",
     }));
   };
 
-  const handleConfirm = () => {
-    fetcher
-      .submit(
-        {
-          ...formData,
-          intent: "update",
-        },
-        { method: "post" }
-      )
-      .then(() => {
-        close();
-      });
-  };
+  function handleClose() {
+    fetcher.data = undefined;
+    setErrors({});
+    close();
+  }
+
+  React.useEffect(() => {
+    if (fetcher.data?.errors) {
+      setErrors(fetcher.data.errors);
+    } else if (fetcher.data?.ok) {
+      handleClose();
+    }
+  }, [fetcher.data]);
 
   return (
     <>
       <Button variant="outline" onClick={open}>
         Update
       </Button>
+
       <Dialog
         title={`Update ${device.name}`}
         isOpen={isOpen}
-        onClose={close}
+        onClose={handleClose}
         showClose={false}
         footer={
           <>
-            <Button onClick={close}>Cancel</Button>
+            <Button onClick={handleClose}>Cancel</Button>
             <Button
-              onClick={handleConfirm}
-              isLoading={fetcher.state === "submitting"}
+              form="update-device-form"
+              type="submit"
+              isLoading={isSubmitting}
             >
               Update
             </Button>
           </>
         }
       >
-        <div className="flex flex-col gap-4">
-          <Input name="id" value={formData.id} disabled required label="ID" />
+        <fetcher.Form
+          id="update-device-form"
+          method="post"
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+        >
+          <input type="hidden" name="intent" value="update" />
+          <input type="hidden" name="id" value={device.id} />
+
           <Input
             name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter device name"
-            required
             label="Name"
+            placeholder="Enter device name"
+            defaultValue={device.name}
+            error={errors.name}
+            onChange={handleChange}
           />
           <Input
             name="type"
-            value={formData.type}
-            onChange={handleChange}
-            placeholder="Enter device type"
-            required
             label="Type"
+            placeholder="Enter device type"
+            defaultValue={device.type}
+            error={errors.type}
+            onChange={handleChange}
           />
           <Input
             name="location"
-            value={formData.location}
-            onChange={handleChange}
-            placeholder="Enter device location"
-            required
             label="Location"
+            placeholder="Enter device location"
+            defaultValue={device.location}
+            error={errors.location}
+            onChange={handleChange}
           />
-        </div>
+        </fetcher.Form>
       </Dialog>
-
-      {fetcher.state === "submitting" && <p className="text-sm">Updating…</p>}
     </>
   );
 }

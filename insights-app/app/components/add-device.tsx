@@ -1,9 +1,7 @@
-// components/delete-device.tsx
 import React from "react";
 import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
 import { useFetcher } from "react-router";
-
 import { Dialog } from "./ui/dialog";
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { Input } from "./ui/form/input";
@@ -11,78 +9,37 @@ import { Input } from "./ui/form/input";
 export default function AddDevice() {
   const fetcher = useFetcher();
   const { isOpen, open, close } = useDisclosure();
-  const [formData, setFormData] = React.useState({
-    name: "",
-    type: "",
-    location: "",
-  });
-  const [errors, setErrors] = React.useState({
-    name: "",
-    type: "",
-    location: "",
-  });
+  const isSubmitting = fetcher.state === "submitting";
+  const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    fetcher.submit(form, { method: "post" });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
+    const { name } = e.target;
+    // Clear error when field changes
     setErrors((prev) => ({
       ...prev,
       [name]: "",
     }));
   };
 
-  const validateForm = () => {
-    const newErrors = {
-      name: "",
-      type: "",
-      location: "",
-    };
-    let isValid = true;
+  function handleClose() {
+    fetcher.data = undefined;
+    setErrors({});
+    close();
+  }
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-      isValid = false;
+  React.useEffect(() => {
+    if (fetcher.data?.errors) {
+      setErrors(fetcher.data.errors);
+    } else if (fetcher.data?.ok) {
+      handleClose();
     }
-    if (!formData.type.trim()) {
-      newErrors.type = "Type is required";
-      isValid = false;
-    }
-    if (!formData.location.trim()) {
-      newErrors.location = "Location is required";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleConfirm = () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    fetcher
-      .submit(
-        {
-          ...formData,
-          intent: "create",
-        },
-        { method: "post" }
-      )
-      .then(() => {
-        close();
-        // Reset form data after successful submission
-        setFormData({
-          name: "",
-          type: "",
-          location: "",
-        });
-      });
-  };
+  }, [fetcher.data]);
 
   return (
     <>
@@ -94,51 +51,51 @@ export default function AddDevice() {
         Add new device
       </Button>
       <Dialog
-        title={`Add Device`}
+        title="Add Device"
         isOpen={isOpen}
-        onClose={close}
+        onClose={handleClose}
         showClose={false}
         footer={
           <>
-            <Button onClick={close}>Cancel</Button>
+            <Button onClick={handleClose}>Cancel</Button>
             <Button
-              onClick={handleConfirm}
-              isLoading={fetcher.state === "submitting"}
+              type="submit"
+              form="add-device-form"
+              isLoading={isSubmitting}
             >
               Add Device
             </Button>
           </>
         }
       >
-        <div className="flex flex-col gap-4">
+        <fetcher.Form
+          id="add-device-form"
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+        >
+          <input type="hidden" name="intent" value="create" />
           <Input
             name="name"
             placeholder="Enter device name"
-            required
-            onChange={handleChange}
-            value={formData.name}
             label="Name"
             error={errors.name}
+            onChange={handleChange}
           />
           <Input
             name="type"
             placeholder="Enter device type"
-            required
-            onChange={handleChange}
-            value={formData.type}
             label="Type"
             error={errors.type}
+            onChange={handleChange}
           />
           <Input
             name="location"
             placeholder="Enter device location"
-            required
-            onChange={handleChange}
-            value={formData.location}
             label="Location"
             error={errors.location}
+            onChange={handleChange}
           />
-        </div>
+        </fetcher.Form>
       </Dialog>
     </>
   );

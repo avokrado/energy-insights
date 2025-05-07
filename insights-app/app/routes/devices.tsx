@@ -1,48 +1,20 @@
 import type { Device } from "@/types/device";
-
 import Table, { type Column } from "@/components/ui/table";
-
 import { useLoaderData } from "react-router";
-import {
-  getDevices,
-  createDevice,
-  updateDevice,
-  deleteDevice,
-} from "@/services/api";
+import { getDevices } from "@/services/api";
 import DeleteDevice from "@/components/delete-device";
 import UpdateDevice from "@/components/update-device";
 import AddDevice from "@/components/add-device";
 import type { Route } from "./+types/devices";
+import {
+  handleDeleteDeviceAction,
+  handleUpdateDeviceAction,
+  handleCreateDeviceAction,
+} from "@/actions/device";
 
 export async function loader() {
   const devices = await getDevices();
   return { devices };
-}
-
-export async function action({ request }: Route.ActionArgs) {
-  const formData = await request.formData();
-  const intent = formData.get("intent");
-
-  const device: Partial<Device> = {
-    id: formData.get("id")?.toString(),
-    name: formData.get("name")?.toString(),
-    location: formData.get("location")?.toString(),
-    type: formData.get("type")?.toString(),
-  };
-
-  switch (intent) {
-    case "create":
-      await createDevice(device);
-      break;
-    case "update":
-      await updateDevice(device);
-      break;
-    case "delete":
-      await deleteDevice(device.id!);
-      break;
-  }
-
-  return null;
 }
 
 export default function Devices() {
@@ -64,13 +36,26 @@ export default function Devices() {
       <Table
         data={devices}
         columns={columns}
-        onDelete={(device) => {
-          return <DeleteDevice device={device} />;
-        }}
-        onUpdate={(device) => {
-          return <UpdateDevice device={device} />;
-        }}
+        onDelete={(device) => <DeleteDevice device={device} />}
+        onUpdate={(device) => <UpdateDevice device={device} />}
       />
     </div>
   );
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get("intent")?.toString();
+  const data = Object.fromEntries(formData);
+
+  switch (intent) {
+    case "create":
+      return handleCreateDeviceAction(data);
+    case "update":
+      return handleUpdateDeviceAction(data);
+    case "delete":
+      return handleDeleteDeviceAction(data.id as string);
+  }
+
+  return null;
 }
