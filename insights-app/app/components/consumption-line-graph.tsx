@@ -1,13 +1,10 @@
-import React from "react";
-import { Spinner } from "./ui/spinner";
 import { cn } from "@/utils/cn";
 import { Card } from "./ui/card";
 import { formatReadingsForLineGraph } from "@/utils/format";
 import type { Reading } from "@/types/reading";
 import { useQueryParam } from "@/hooks/use-query-params";
 import { SelectControl, type SelectOption } from "./ui/select";
-
-const LineGraph = React.lazy(() => import("./ui/graphs/line-graph"));
+import LineGraph from "./ui/graphs/line-graph";
 
 const dayOptions: SelectOption[] = [
   { value: "7", label: "7 days" },
@@ -23,11 +20,7 @@ export default function ConsumptionLineGraph({
   data: Reading[];
 }) {
   const [days, setDays] = useQueryParam("days", "7");
-
   const chartData = formatReadingsForLineGraph(data, Number(days));
-
-  // Render only on client
-  if (typeof window === "undefined") return null;
 
   return (
     <Card className={cn(className)}>
@@ -41,9 +34,7 @@ export default function ConsumptionLineGraph({
         />
       </div>
       <div className="h-[400px] w-full flex justify-center items-center">
-        <React.Suspense fallback={<Spinner />}>
-          <LineGraph chartData={chartData} />
-        </React.Suspense>
+        <LineGraph chartData={chartData} />
       </div>
     </Card>
   );

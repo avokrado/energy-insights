@@ -13,21 +13,15 @@ export async function loader() {
 export default function Dashboard({
   loaderData: { readings },
 }: Route.ComponentProps) {
-  const [isClient, setIsClient] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   return (
     <>
       <h1 className="text-2xl font-bold">Energy consumption insights</h1>
       <div className="flex flex-col lg:flex-row gap-4 w-full">
         <div className="w-full lg:w-1/2">
-          {isClient && <ConsumptionLineGraph data={readings} />}
+          <ConsumptionLineGraph data={readings} />
         </div>
         <div className="w-full lg:w-1/2">
-          {isClient && <BarChartClient data={readings} />}
+          <BarChartClient data={readings} />
         </div>
       </div>
     </>

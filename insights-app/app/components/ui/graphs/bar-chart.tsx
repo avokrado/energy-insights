@@ -1,5 +1,6 @@
+import { useIsClient } from "@/hooks/use-is-client";
 import { ResponsiveBar } from "@nivo/bar";
-
+import { Spinner } from "../spinner";
 export interface BarChartProps {
   chartData: {
     deviceId: string;
@@ -8,6 +9,12 @@ export interface BarChartProps {
 }
 
 export default function BarChart({ chartData }: BarChartProps) {
+  const isClient = useIsClient();
+
+  if (!isClient) {
+    return <Spinner />;
+  }
+
   if (chartData.length === 0) {
     return <div>No data to display</div>;
   }

@@ -1,4 +1,6 @@
+import { useIsClient } from "@/hooks/use-is-client";
 import { ResponsiveLine } from "@nivo/line";
+import { Spinner } from "../spinner";
 
 export interface LineGraphProps {
   chartData: {
@@ -11,6 +13,12 @@ export interface LineGraphProps {
 }
 
 export default function LineGraph({ chartData }: LineGraphProps) {
+  const isClient = useIsClient();
+
+  if (!isClient) {
+    return <Spinner />;
+  }
+
   if (chartData.length === 0) {
     return <div>No data to display</div>;
   }
