@@ -1,7 +1,6 @@
 import { cn } from "@/utils/cn";
 import { Card } from "./ui/card";
 import { formatReadingsForLineGraph } from "@/utils/format";
-import type { Reading } from "@/types/reading";
 import { useQueryParam } from "@/hooks/use-query-params";
 import { SelectControl, type SelectOption } from "./ui/select";
 import LineGraph from "./ui/graphs/line-graph";
@@ -15,12 +14,13 @@ const dayOptions: SelectOption[] = [
 export default function ConsumptionLineGraph({
   className,
   data,
+  defaultDays,
 }: {
   className?: string;
-  data: Reading[];
+  data: ReturnType<typeof formatReadingsForLineGraph>;
+  defaultDays: string;
 }) {
-  const [days, setDays] = useQueryParam("days", "7");
-  const chartData = formatReadingsForLineGraph(data, Number(days));
+  const [days, setDays] = useQueryParam("days", defaultDays);
 
   return (
     <Card className={cn(className)}>
@@ -34,7 +34,7 @@ export default function ConsumptionLineGraph({
         />
       </div>
       <div className="h-[400px] w-full flex justify-center items-center">
-        <LineGraph chartData={chartData} />
+        <LineGraph chartData={data} />
       </div>
     </Card>
   );

@@ -9,26 +9,16 @@ import BarChart from "./ui/graphs/bar-chart";
 export default function BarChartClient({
   className,
   data,
+  defaultDate,
 }: {
   className?: string;
-  data: Reading[];
+  data: ReturnType<typeof formatReadingsForBarGraph>;
+  defaultDate: string;
 }) {
-  const [date, setDate] = useQueryParam("date");
-
-  React.useEffect(() => {
-    if (!date) {
-      setDate(new Date().toISOString().split("T")[0]);
-    }
-  }, [date, setDate]);
-
-  const barChartData = formatReadingsForBarGraph(
-    data,
-    date ? new Date(date) : undefined
-  );
+  const [date, setDate] = useQueryParam("date", defaultDate);
 
   function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const date = new Date(e.target.value);
-    setDate(date.toISOString().split("T")[0]);
+    setDate(e.target.value);
   }
 
   return (
@@ -38,7 +28,7 @@ export default function BarChartClient({
           <input
             type="date"
             id="date"
-            value={date || ""}
+            value={date}
             onChange={handleDateChange}
             className="rounded border border-gray-300 px-2 py-1"
             aria-label="Select the date to display"
@@ -46,7 +36,7 @@ export default function BarChartClient({
         </div>
       </div>
       <div className="h-[400px] w-full flex justify-center items-center">
-        <BarChart chartData={barChartData} />
+        <BarChart chartData={data} />
       </div>
     </Card>
   );
