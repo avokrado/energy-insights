@@ -16,12 +16,6 @@ export default function AddDevice({
   const isSubmitting = fetcher.state === "submitting";
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    fetcher.submit(form, { method: "post" });
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name } = e.target;
     // Clear error when field changes
@@ -62,7 +56,7 @@ export default function AddDevice({
     >
       <fetcher.Form
         id="add-device-form"
-        onSubmit={handleSubmit}
+        method="post"
         className="flex flex-col gap-4"
       >
         <input type="hidden" name="intent" value="create" />
